@@ -1,0 +1,14 @@
+#ktor:
+#  development: true
+#  application:
+#    modules:
+#      - example.com.ApplicationKt.sharedModule
+#  deployment:
+#    port: 8081
+#jwt:
+#  domain: "https://jwt-provider-domain/"
+#  audience: "jwt-audience"
+#  realm: "ktor sample app"
+
+#
+#This is a shared code. Do not consider it as shared service

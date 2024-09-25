@@ -1,0 +1,11 @@
+ktor:
+  application:
+    modules:
+      - com.redwater.ApplicationKt.userModule
+  deployment:
+    port: 8084
+jwt:
+  domain: "https://jwt-provider-domain/"
+  audience: "jwt-audience"
+  realm: "ktor sample app"
+  secret: $JWT_SECRET

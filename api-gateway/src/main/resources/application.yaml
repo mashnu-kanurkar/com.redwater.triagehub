@@ -1,0 +1,20 @@
+ktor:
+  application:
+    modules:
+      - com.redwater.ApplicationKt.apiGatewayModule
+  deployment:
+    port: 8088
+jwt:
+  domain: "https://jwt-provider-domain/"
+  audience: "jwt-audience"
+  realm: "ktor sample app"
+  secret: $JWT_SECRET
+
+#db:
+#  mongo:
+#    user: $MONGO_USER
+#    password: $MONGO_PASSWORD
+#    appname: "auto-triager-test-cluster0"
+#    host: "auto-triager-test-clust.itnsm.mongodb.net"
+#    port: "27017"
+#    maxPoolSize: "20"

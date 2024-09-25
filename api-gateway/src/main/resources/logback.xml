@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <turboFilter class="com.redwater.logging.PasswordMaskingFilter"/>
+    <appender name="LogDnaHttp" class="com.redwater.logging.LogDnaAppender">
+        <encoder>
+            <pattern>[%thread] %X{call-id} %logger{36} -%kvp %X{org-id} -%msg%n</pattern>
+        </encoder>
+        <appName>API Gateway</appName>
+        <ingestUrl>${LOGDNA_INGEST_URL}</ingestUrl>
+        <ingestKey>${LOGDNA_INGEST_KEY}</ingestKey>
+        <mdcFields>requestId,requestTime</mdcFields>
+        <mdcTypes>string,int</mdcTypes>
+        <tags>dev</tags>
+        <connectTimeout>5000</connectTimeout>
+        <readTimeout>10000</readTimeout>
+        <useTimeDrift>false</useTimeDrift>
+        <hostname>default</hostname>
+
+        <!-- Add a filter to exclude MongoDB logs -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+    </appender>
+
+    <appender name="LogDna" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LogDnaHttp" />
+        <queueSize>500</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %X{call-id} %-5level %logger{36} %X{org-id} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="TRACE">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="LogDna" />
+    </root>
+
+    <!-- Log all levels to console for MongoDB -->
+    <logger name="org.mongodb.driver" level="TRACE" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <!-- Log only ERROR level to LogDna for MongoDB -->
+    <logger name="org.mongodb.driver" level="ERROR" additivity="false">
+        <appender-ref ref="LogDna" />
+    </logger>
+
+    <logger name="org.eclipse.jetty" level="INFO"/>
+    <logger name="io.netty" level="INFO"/>
+    <logger name="com.redwater.user.InternalUserOperations" level="INFO" />
+</configuration>
